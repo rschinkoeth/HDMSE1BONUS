@@ -4,7 +4,7 @@ import java.io.*;
 //import java.io.BufferedReader;
 //import java.io.FileReader;
 
-public class Newh {
+public class ErsterTest_TextEinlesen {
 
 	public static void main(String[] args) throws IOException {
 		String file_name = "input.txt";
