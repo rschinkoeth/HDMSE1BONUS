@@ -10,6 +10,7 @@ public class ErsterTest_TextEinlesen {
 		String file_name = "input.txt";
 		String search_for = "red";
 //eine Änderung
+//noch eine Änderung
 		//String file_path = "C:\\Users\\km\\workspace\\textdatei_laden\\src\\main\\java\\hdm\\stuttgart\\mi\\se1\\test\\textdatei_laden\\" + file_name;
 		String file_path = "src\\main\\java\\SE1Bonus\\SE1Bonus\\" + file_name;
 		
