@@ -1,0 +1,608 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta content="text/html; charset=UTF-8" http-equiv="content-type"><title>3.2.&nbsp;Poor man's UNIX grep.</title><link href="3.2.%C2%A0Poor%20man%27s%20UNIX%20grep-Dateien/webhelp.css" rel="stylesheet" type="text/css"><meta content="DocBook XSL Stylesheets V1.78.1" name="generator"><link href="https://mirror.mi.hdm-stuttgart.de/freedocs/index.html" rel="home" title="Lecture notes"><link href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectExamAmendingProjects.html" rel="up" title="3.&nbsp;Examination bonus point project"><link href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectProjectCriteria.html" rel="prev" title="3.1.&nbsp;Marking criteria / Hints"><link href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1ProjectSieveErathostenes.html" rel="next" title="3.3.&nbsp;Project Euler's sieve (Winter 2015)"><script charset="UTF-8" src="3.2.%C2%A0Poor%20man%27s%20UNIX%20grep-Dateien/snowball_en.js" type="text/javascript"></script><link href="3.2.%C2%A0Poor%20man%27s%20UNIX%20grep-Dateien/jquery-ui.css" rel="stylesheet" type="text/css"><link href="3.2.%C2%A0Poor%20man%27s%20UNIX%20grep-Dateien/wh.css" rel="stylesheet" type="text/css"><script src="3.2.%C2%A0Poor%20man%27s%20UNIX%20grep-Dateien/jquery.js" type="text/javascript">
+    </script><script src="3.2.%C2%A0Poor%20man%27s%20UNIX%20grep-Dateien/jquery-ui.js" type="text/javascript">
+    </script><script charset="UTF-8" src="3.2.%C2%A0Poor%20man%27s%20UNIX%20grep-Dateien/wh.js" type="text/javascript">
+    </script><script charset="UTF-8" src="3.2.%C2%A0Poor%20man%27s%20UNIX%20grep-Dateien/search.js" type="text/javascript">
+    </script><script charset="UTF-8" src="3.2.%C2%A0Poor%20man%27s%20UNIX%20grep-Dateien/hdmextensions.js" type="text/javascript">
+    </script></head><body>
+    
+
+    <div style="height: 841px;" id="wh-body">
+      <div style="width: 283px; height: 834.467px;" class="ui-tabs ui-widget ui-widget-content ui-corner-all" id="wh-navigation">
+        <ul role="tablist" class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" id="wh-tabs">
+          <li aria-expanded="true" aria-selected="true" aria-labelledby="ui-id-1" aria-controls="wh-toc-pane" tabindex="0" role="tab" class="ui-state-default ui-corner-top ui-tabs-active ui-state-active" id="wh-toc-tab"><a id="ui-id-1" tabindex="-1" role="presentation" class="ui-tabs-anchor" href="#wh-toc-pane"><span>Inhalt</span></a></li>
+          
+          <li aria-expanded="false" aria-selected="false" aria-labelledby="ui-id-2" aria-controls="wh-search-pane" tabindex="-1" role="tab" class="ui-state-default ui-corner-top" id="wh-search-tab"><a id="ui-id-2" tabindex="-1" role="presentation" class="ui-tabs-anchor" href="#wh-search-pane"><span>Suchen</span></a></li>
+        </ul>
+        <div style="height: 802.467px;" aria-hidden="false" role="tabpanel" class="ui-tabs-panel ui-widget-content ui-corner-bottom" aria-labelledby="ui-id-1" id="wh-toc-pane">
+          <div class="ui-widget ui-widget-header ui-corner-all" id="wh-toc-form">
+            <span class="ui-buttonset" id="wh-toc-control"><a title="Alle ausblenden" role="button" class="ui-button ui-widget ui-state-default ui-corner-left ui-button-icon-only" href="#"><span class="ui-button-icon-primary ui-icon ui-icon-circle-minus"></span><span class="ui-button-text">Alle ausblenden</span></a><a title="Alle einblenden" role="button" class="ui-button ui-widget ui-state-default ui-corner-right ui-button-icon-only" href="#"><span class="ui-button-icon-primary ui-icon ui-icon-circle-plus"></span><span class="ui-button-text">Alle einblenden</span></a></span>
+            <button title="Vorherige Seite" role="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" id="wh-toc-previous"><span class="ui-button-icon-primary ui-icon ui-icon-circle-arrow-n"></span><span class="ui-button-text">Vorherige Seite</span></button>
+            <button title="Nächste Seite" role="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" id="wh-toc-next"><span class="ui-button-icon-primary ui-icon ui-icon-circle-arrow-s"></span><span class="ui-button-text">Nächste Seite</span></button>
+            <button title="Print Page" role="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" id="wh-toc-print"><span class="ui-button-icon-primary ui-icon ui-icon-print"></span><span class="ui-button-text">Print Page</span></button>
+          </div>
+          <script charset="UTF-8" src="3.2.%C2%A0Poor%20man%27s%20UNIX%20grep-Dateien/toc.js" type="text/javascript">
+          </script><ul style="height: 753.133px;" class="toc-toc" id="wh-toc">
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/index.html">Lecture notes</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/preface.html">Preface</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1.html">Software development 1</a><ul><li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1GettingStarted.html">Getting started</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1Resources.html">Lecture related resources</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1CommonRessources.html">Common software development related resources</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1CodeSnippets.html">Play!</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectSnippetHelloWorld.html">“Hello, World” and friends.</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectSimpleMath.html">Simple calculations</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectSimpleMathConditional.html">A conditional</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectSimpleMathLoop.html">A loop</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1LanguageFundamental.html">Language Fundamentals</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1LegalVariableName.html">Legal variable names</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1IntegerLiterals.html">Integer value literals</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectBinaryIntLiteral.html">Binary literals</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectBracesInPrintln.html">Why using braces inside System.out.println(...) ?</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1SectHexadecimalLiterals.html">Hexadecimal literals</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectIntMinMax.html">An int's minimum and maximum value</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1SectSimpleExpressions.html">Simple expressions</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectCircleArea.html">Calculating a circle area</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectTemperatureConvert.html">Converting temperature values</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectTimeUnits.html">Time unit conversion</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectLong2Float.html">Reducing long to int</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectFloatPrecisionProblem.html">Representational float and double miracles</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectInterestSimple.html">Interest calculation</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1ExpressionStrangeThings.html">Strange things happen</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1SectAssignArithmetics.html">Assignments and simple arithmetics</a></li>
+</ul>
+</li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1StringLiterals.html">Dealing with strings</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1LanguageFundamentalUsingFinal.html">Using final</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1fundamentalsWildThings.html">Wild things</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1ChapterStatements.html">Statements</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectExternalLogicExercises.html">Logic related external exercises</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1Conditionals.html">Conditional clauses</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectAtTheBar.html">At the bar</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectLeapYear.html">Leap years</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectRomanNumerals.html">Roman numerals</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1StatementsLoops.html">Loops</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectOnlyEven.html">Printing even numbers</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1SectXmas.html">Merry Xmas</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1SectXmasMoreFun.html">More fun with Xmas trees</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectSquareNumberTable.html">A table of square numbers</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1SectSquareNumbersFormatted.html">Tidy up the mess!</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1SectSquareNumbersHtmlFormatted.html">HTML-ify me</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectIntermediateMultiplication.html">Auxiliary Example, part 1: A multiplication table</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectIntermediateMultiplication2.html">Auxiliary Example, part 2: Avoiding redundant entries</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectSquareTableBlocks.html">Creating a “real” square table</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectSquareTableBlocksHtml.html">Creating a sophisticated HTML version of your square table</a></li>
+</ul>
+</li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectPlayingLottery.html">Playing lottery</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectNumberguess.html">Guessing numbers</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1SectionPostExamMarking.html">Post modifying an exam's marking</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectionMinimalDivideFirst20.html">Smallest multiple</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1SectionPythagoreanTriples.html">Pythagorean triples</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1ChapterObjectsClasses.html">Objects and Classes</a><ul><li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectUsingMavenEclipse.html">Preliminaries: Using Maven in Eclipse</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectOwncloud.html">Working at HdM and at home seamlessly</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectCodingbatJunit.html">From codingbat to Junit.</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1GenerateJavadoc.html">Generating Javadoc™.</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1ImportMavenSolutions.html">Solutions to exercises</a></li>
+</ul>
+</li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectUsingMavenShell.html">Preliminaries: Using Maven from a shell</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectCreatingAnObject.html">Creating An Object</a><ul><li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectEmployeeClass.html">The Employee class</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectExtendEmployee.html">Extending the employee example.</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1SectEmployeeConstructorThis.html">Constructors and variable names</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1GeometryClasses.html">Dealing with geometry classes</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectionGeometryCircle.html">Modeling circles</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectSvgAndTranslation.html">Adding translations and SVG export.</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectEncapsulation.html">Encapsulation and Access Control</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectRefineAccessEmployee.html">Refining access to an employee's attributes</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectEmployeeFilesystemRepresentation.html">File system representation</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectStaticMembers.html">Static Members</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1LeapYera.html">Leap years</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SummingUpIntegers.html">Summing up integer values</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1RewriteLoop.html">Rewriting a loop</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1MathTable.html">A mathematical table.</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1InterestCalculator.html">Interest calculations</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1InterestCalculatorSimple.html">A simple interest calculator</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1VariableExercises.html">Extending our interest calculator</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectIntOverflow.html">Integer value considerations.</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectFraction.html">A class representing fractions</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectVariableComplexExpression.html">Programmer's favourite expression</a></li>
+</ul>
+</li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectLotteryRevisited.html">Lotteries revisited</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1Gcd.html">The greatest common divisor and the common multiple</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/ed1FractionCancel.html">Cancelling fractions</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1MathMaxAbs.html">Building a private library of mathematical functions.</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectMaxAbs.html">Maximum and absolute value</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectFactorialDirect.html">Factorial, the direct way</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectFactorialRecursive.html">Factorial, the recursive way</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectBinomRecursive.html">Binomials, the recursive way</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SecExp.html">Implementing exponentials.</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1MathSin.html">Adding sine</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdnSecSinRoundingErrors.html">Strange things happen</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SinComplete.html">Completing sine implementation</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1ChapterObjectsClassesCannon.html">Simulating a car jump</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectCarJumpBasic.html">A basic model, rolling downwards</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectCarJumpGettingAirborne.html">Getting airborne</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1ChapterCoreClasses.html">Core Classes</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectVarargsFormat.html">Reconsidering System.out.format().</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1SectionCoreClassesUsingMath.html">Using class Math</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1SectAdvancedExternalStringExercise.html">External String exercises</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1StringDigitProduct.html">Analyzing strings</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/pitfallsUsingOperatorEquals.html">Pitfalls using the operator “==”</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectStringWeirdo.html">Weird, weirder, weirdest!</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectFilePathAnalyzer.html">Analyzing file pathnames</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1ChapterArrays.html">Arrays</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectArray2html.html">Converting string arrays to HTML.</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1SectHarderExternalStringExercise.html">External array and string exercises</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectNavigation.html">Route navigation</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectMarkFrequencies.html">Examinations and mark frequencies</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectTicTacToePart.html">Tic-tac-toe</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectTicTacToeTwodimensional.html">Tic-tac-toe using a two-dimensional array</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectTicTacToeOnedimensional.html">Changing the game's internal representation</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectTicTacToeComputerVsHuman.html">Tic-tac-toe, Computer vs. human</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SummingUpValues.html">Summing up values</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SumByConsoleInput.html">Reading console input</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1OptimizeSumRepresentation.html">Prettifying output representation</a></li>
+</ul>
+</li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1IntStore.html">Storing integer values</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1IntStoreUnbounded.html">Let the store grow dynamically</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1StoreStatistics.html">Providing statistical data</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1PrimeRevisit.html">Prime numbers revisited</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1PrimeSimple.html">A simple algorithm</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1PrimePerformance.html">Improving performance</a></li>
+</ul>
+</li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1Median.html">The median of a given sample.</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectPlottingFunctions.html">Plotting functions</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1ChapterInheritance.html">Inheritance</a><ul><li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1SectGeometryInherit.html">Geometry classes reconsidered</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectFigureBaseClass.html">Defining a Figure class hierarchy.</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectFigureScale.html">Scaling figures</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectFigureToString.html">Providing toString() methods</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1ChapterErrorHandling.html">Error Handling</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1SectionErrorHandling.html">Preparations</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1ChapterWorkingWithNumbers.html">Working with Numbers</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1SectionWorkingWithNumbers.html"></a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1ChapterInterfacesAbstractClasses.html">Interfaces and Abstract Classes</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sw1SectNonsenseGenerator.html">A nonsense generator</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectPlotterInterface.html">An interface based plotter</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1Deploy.html">Application deployment I (8.12.)</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1DeployPrepare.html">Preparations</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1DeployExercise.html">Exercises</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1AppDeploy2Exercise.html">Part II, Exercises</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1ReadCharStreams.html">Reading character streams (15.12.)</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1ReadCharStreamsPrepare.html">Preparations</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1GnuWc.html">Exercises</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1Collection1.html">Collections</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1CollectionsPrep.html">Preparations</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1Collection1exercise.html">Collections I, Exercises</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1Collection2exerciseSetString.html">A Set of Strings</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1CollectionExerciseListString.html">A List of Strings</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1CollectionDefCoordinate.html">Defining a Coordinate class</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SetCoordinate.html">A Set of Coordinate instances</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1Collection2exercise.html">Collections I, Exercises</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1CollectionExerciseWordSearch.html">Getting a Set of strings from a text file</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1CollectionExerciseWordSearchOrder.html">Result string ordering</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1StringLengthSort.html">Sorting strings in an unusual way</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1CollectionWordFrequencies.html">Result string ordering</a></li>
+</ul>
+</li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1Collection3Exercise.html">Collections III, Exercises</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1Collection4Exercise.html">Collections IV, Exercises</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1MapPrepare.html">Maps 1, Preparations</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1MapExercise.html">Exercises</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1TownsByCountry.html">Towns and country names</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1MapMarks.html">Creating an overview of grades</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/apa.html">Appendix</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1ExaminationHints.html">Examination hints</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1ExternalSupplementaryExercises.html">Recommended external exercises</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectExamAmendingProjects.html">Examination bonus point project</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectProjectCriteria.html">Marking criteria / Hints</a></li>
+<li><a class="wh-toc-selected" href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1SectProjectGrep.html">Poor man's UNIX grep.</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sd1ProjectSieveErathostenes.html">Project Euler's sieve (Winter 2015)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/apb.html">List of exercise sets in Software development 1</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1.html">Structured Data and Applications 1</a><ul><li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/prerequisites.html">Prerequisites</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/resources.html">Lecture related resources</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/tools.html">Tools</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/eclipse.html">JDK and Eclipse</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/oxygenxmlInstall.html">Oxygenxml standalone version</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/erMaster.html">ERMaster</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/mysql.html">Mysql Database components</a></li>
+</ul>
+</li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/repeatRelational.html">Some notes on relational databases</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SqlClient.html">SQL client software</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/toolingConfigJdbc.html">Configuring and using the Eclipse database development plugin</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1ConfigOracleSqldevelop.html">Configuring Oracle SQL Developer.</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/xmlIntro.html">Introduction to XML</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/xmlBasic.html">The XML industry standard</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/xmlHtml.html">Well formed XML documents</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/xmlSchema.html">Beyond well- formedness</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1BeyondWellformedReading.html">Suggested readings</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/motivationSchema.html">Motivation</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/dtdBasic.html">XML Schema</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/dtdFirstExample.html">Structural descriptions for documents</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/section_memo_machinereadable.html">A machine readable description</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/dtdVsSqlDdl.html">Relating schema's and SQL - DDL</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/airlineXsd.html">The airline example revisited</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/xmlAndJava.html">Relating schema's and Java™ class descriptions.</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/xmlSchemaExercise.html">XML schema exercises</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sectSchemaProductCatalog.html">A product catalog</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sectQandaBookV1.html">Book documents</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sectQandaBookLang.html">Allow different languages</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sectMixQuotes.html">Mixing attribute quotes</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectSetInternRef.html">Supporting &lt;table&gt; and internal references in book.xsd.</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/xsl.html">The Extensible stylesheet Language XSL</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectXslPreconditions.html">Required knowledge</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/xsl_helloworld.html">A “Hello, world” XSL example</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/xpath.html">XPath and node sets</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/xsl_important_elements.html">Some important XSL elements</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/xsl_if.html">&lt;xsl:if&gt;</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/xsl_apply_templates.html">&lt;xsl:apply-templates&gt;</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/xsl_choose.html">&lt;xsl:choose&gt;</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/section_html_book.html">A complete HTML formatting example</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/section_memo_to_list.html">Listing the recipients of a memo</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/section_xsl_attribute.html">&lt;xsl:attribute&gt;</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/section_xsl_mixed.html">XSL and mixed content</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/section_xsl_functionid.html">The function id()</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/xslAxis.html">XSL axis definitions</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/xslChunking.html">Splitting documents into chunks</a></li>
+</ul>
+</li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectXml2Html.html">Transforming arbitrary XML to XHTML</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/dom.html">The Document Object Model (DOM)</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectDomPreconditions.html">Required knowledge</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/domBase.html">Language independent specification</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/domCreate.html">Creating a new document from scratch</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/domCreateExercises.html">Exercises</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/domParse.html">Parsing existing XML documents</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SimpleDomProcess.html">Simple DOM processing</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectElementVisualize.html">Visualizing XML document elements</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectFunctionalBasics.html">Reminder to functional programming elements in Java™.</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectDomCreateHtml.html">Creating HTML output</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectCleanHtml.html">Cleaning up HTML.</a></li>
+</ul>
+</li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/domJavaScript.html">Using DOM with HTML/Javascript</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/domXpath.html">Using XPath</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectVerifyImgReadable.html">Verification of referenced images readability</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/domXsl.html">DOM and XSL</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectNamespaceElementStatistics.html">Namespace / elements statistics</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/introPersistence.html">Accessing Relational Data</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectJdbcPreconditions.html">Required knowledge</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/persistence.html">Persistence in Object Oriented languages</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/jdbcIntro.html">Introduction to JDBC™</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/jdbcWrite.html">Write access, principles</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/writeAccessCoding.html">Write access, coding!</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/propertiesFile.html">Connection properties</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/xmldata2rdbms.html">Moving data from XML to relational systems</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectSimpleInsertGui.html">A first GUI sketch</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectSimpleInsertGuiErrorHandling.html">Input validation and error handling</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/jdbcExceptions.html">Decoupling GUI and database components</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectUserInitiatedConnect.html">User initiated connect to database.</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/jdbcSecurity.html">JDBC™ and security</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/jdbcSecurityNetwork.html">Network sniffing</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sqlInjection.html">SQL injection</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sanitizeUserInput.html">Sanitizing user input</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sectPreparedStatements.html">java.sql.PreparedStatement objects</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/jdbcRead.html">Read Access</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sectGetterTypeConversion.html">Getter methods and type conversion</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sectHandlingNullValues.html">Handling NULL values.</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectUserAuthStrategy.html">A user authentication “strategy”</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectPasswordsHashed.html">Passwords and hash values</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectGuiAuthenticateTheRealMcCoy.html">Gui authentication: The real McCoy</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectArchitectSecurityConsiderations.html">Architectural security considerations</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectRelationadatal2Xml.html">Reversing XML to Rdbms</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectCatalog2html.html">Generating HTML from both XML and relational input data</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/chapJpaGettingStarted.html">Getting started with JPA</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1JpaLecture.html">Persisting lecture instances</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectRdbms2catalogJpa.html">Exporting XML catalog data using JPA.</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/apc.html">Appendix</a><ul><li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectExamAmendingProjects.html">Examination amending projects</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectProjectCriteria.html">Marking criteria / Hints</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectPrjDocbookCms.html">Project Docbook CMS.</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiProjectBusinessCard.html">Project business cards</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectVaadin.html">Using Vaadin</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectVaadinMavenConfig.html">Configuring Maven.</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1VaadinSortedIntegerSet.html">Properties, editors and listeners</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sax.html">XML APIs, the Simple API for XML (SAX)</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SaxRecommendedReading.html">Recommended reading</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/saxPrinciple.html">The principle of a SAX application</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/saxIntroExample.html">First steps</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/saxRegistry.html">Event- and error handler registration</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SecElementLists.html">The set of element names</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SaxView.html">A limited view on a given XML document instance</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectImgAlign.html">Searching &lt;img/&gt; elements for obsoleted attributes.</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectFilterImg.html">Filtering &lt;img/&gt; elements.</a></li>
+</ul>
+</li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/saxValidate.html">SAX validation</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/saxNamespace.html">Namespaces</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda1SectFo.html">Generating printed output</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/foIntro.html">Online and print versions</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/foStart.html">A simple FO document</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/layoutParam.html">Page layout</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/headFoot.html">Headers and footers</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/foContainer.html">Important Objects</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/fo_block.html">fo:block</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/fo_list.html">Lists</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/leaderRule.html">Leaders and rules</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/pageNumbering.html">Page numbers</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/foMarker.html">Marker</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/foIntRef.html">Internal references</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/pdfBookmarks.html">PDF bookmarks</a></li>
+</ul>
+</li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/xml2fo.html">Constructing FO from XML documents</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/foCatalog.html">Formatting a catalog.</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/apd.html">List of exercise sets in Structured Data and Applications 1</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda2.html">Structured Data and Applications 2</a><ul><li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/ldap.html">ldap and JDBC</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/ldapIntro.html">Getting started with LDAP</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/ldapSetup.html">Setting up an Openldap server</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/ldapSimpleInserts.html">Adding some sample data using Apache Directory Studio</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/ldifImportExport.html">LDIF export and import</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/ditSearch.html">Searching the DIT</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/unix2sql2ldap.html">UNIX to SQL to LDAP</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/transactionsInJdbc.html">Transactions in JDBC™</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/accountTransferPessimistic.html">Account Transfer using pessimistic concurrency control</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/accountTransferOptimistic.html">Account Transfer using optimistic concurrency control</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/jpa.html">JPA</a><ul><li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/configureEclipseMaven.html">Configuring a Maven based Eclipse Java™ project with Hibernate</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sect_mavenConfigEclipseProject.html">Create a Maven based project in Eclipse</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sect_mavenAddMysqlJdbcConnector.html">Adding a Mysql™ JDBC™ driver</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sect_mavenAddHibernate.html">Adding Hibernate dependencies</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sect_createHibernateConfiguration.html">Creating a JPA configuration</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sect_hibernateBasics.html">A round trip working with objects</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/persistingObjects.html">Persisting objects</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/loadingObjectsByPrimaryKey.html">Loading Objects by primary key</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/loadingObjectsByQuery.html">Loading objects by queries</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/criteriaBasedQueries.html">Criteria based queries</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/mappingSingleClasses.html">Mapping single entities and database tables</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/transientProperties.html">Transient properties</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sect_mappingNullValues.html">Properties and NULL values</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/mappingKeys.html">Defining keys</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sect_ComposedKeys.html">Composed keys</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/nonUniqueIndexes.html">Indexes (non-unique)</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sect_RenameTablesAndAttributes.html">Renaming tables and attributes</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sectChangeDefaultTypeMapping.html">Changing the default type mapping</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sda2SectObjectStates.html">Object states and transitions</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sectionXmlJpaJaxb.html">XML to JPA using JAXB</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sectionXmlJpaJaxbSchema.html">Supplying a schema</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sectionXmlJpaJaxbImport.html">Importing XML data to a RDBMS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/jpaInheritance.html">Inheritance</a><ul><li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sect_InheritTablePerClassHierarchie.html">Single table per class hierarchy</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sect_InheritTablePerClassHierarchieLoad.html">Database object retrieval</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sect_InheritTablePerClassHierarchieNullProblem.html">Null values</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/joinedSubclass.html">Joined subclasses</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/joinedSubclassRetrieve.html">Retrieving Objects</a></li>
+</ul>
+</li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/inheritTablePerConcrete.html">Table per concrete class</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/jpaAssociations.html">Mapping related Components and entities</a><ul><li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/primaryKeyRevisit.html">Primary keys revisited</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/objectEqualityByPrimaryKey.html">Defining object equality by primary key</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/objectEqualityByNaturalKey.html">Object equality by natural key</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/equalityByNaturalKey.html">Implementing Object.equals(Object) by natural keys</a></li>
+</ul>
+</li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/entityValueTypes.html">Entity and value types</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sect_MappingComponents.html">Mapping components</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/valueSets.html">Sets and lists</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/cache.html">Caching</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/orphanRemoval.html">orphanRemoval vs. CascadeType.DELETE</a></li>
+</ul>
+</li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/jax-rs.html">REST applications based on Java™-rs</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/ape.html">List of exercise sets in Structured Data and Applications 2</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdi.html">Software defined infrastructure</a><ul><li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiUnixIntro.html">UNIX / LINUX Basics</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiUnixIntroPrerequisites.html">Prerequisites</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiPackage.html">Ubuntu / Debian Package management</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdPackagePrerequisites.html">Prerequisites</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiGettingStarted.html">Getting started</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiAccessVm.html">Accessing your virtual machine</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiDns.html">DNS</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiDnsPrelim.html">Preliminaries</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiDnsExercises.html">Exercises</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiBindInstall.html">Installing Bind</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiBindConfigBasic.html">Basic configuration</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiDnsForwarder.html">Forwarders</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiBindMx.html">Mail exchange record</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiLdap.html">LDAP</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/ldapPrepare.html">Recommended Preparations</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/ldapExercises.html">Exercises</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiBrowseExistingLdap.html">Browse an existing LDAP Server</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/ldapServerSetup.html">Set up an OpenLdap server</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/ldapCompanyLdif.html">Populating your DIT.</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiLdapTestBind.html">Testing a bind operation as non - admin user</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/ldapTest.html">Accessing LDAP data by a mail client</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiLdapConfig.html">LDAP configuration</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/ldapFilter.html">Filter based search</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/ldapExtendPosixAccount.html">Extending an existing entry</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiLdapWebManagement.html">Providing WEB based user management</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/diSectLdapBackupRestore.html">Backup and recovery / restore</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/ldapReplication.html">Replication</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiSectLdapByJava.html">Accessing LDAP by a Java™ application.</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiApache.html">Apache web server</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiApachePrelim.html">Preliminaries</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiApacheExercise.html">Exercises</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiApacheFirstSteps.html">First Steps</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiApacheVirtualHosts.html">Virtual hosts</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiApacheSsl.html">SSL / TLS Support</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiApacheLdapAuth.html">LDAP authentication</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiSectMysqlAdmin.html">Mysql™ database administration</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiSectDocbookPublish.html">Publish your documentation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiSamba.html">Network file systems served by Samba</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiSectSambaPrerequisites.html">Prerequisites</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiSectSambaInstall.html">Samba server installation</a></li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiMail.html">Mail</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiMailPrepare.html">Recommended Preparations</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiMailExercises.html">Exercises</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiMailInstallSendLocalUsers.html">Install and send to local Users</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiSectAuthenticationSetupVirtualUsers.html">Authentication Setup and Virtual Users</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiSectTls.html">TLS</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiSectSpamVirusDefense.html">Spam and Virus defense</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiSectBlackGreyListing.html">blacklisting and greylisting</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiSectAmavisClamavSpamassassin.html">Amavis, Clamav and Spamassasin</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiSectSpf.html">SPF (optional)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiSystemSurveillance.html">Systems surveillance</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/sdiSectNagios.html">Working with Nagios</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/persist.html">Persistence strategies and application development</a><ul><li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/persistSelectedTopics.html">Selected topics related to persistence in application development</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/persistRecommendedReadings.html">Recommended reading</a></li>
+<li class="toc-expanded"><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/persistSectGettingStarted.html">Getting started</a><ul><li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/persistSectAirlineProject.html">Creating a Hibernate JPA project</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/persistSectAirlineKeyAutoIncrement.html">Adding keys and AUTO_INCREMENT</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/persistSectAirlineSimpleKey.html">Advocating simple key definitions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/apf.html">List of exercise sets in Persistence strategies and application development</a></li>
+</ul>
+</li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/bi01.html">Bibliography</a></li>
+<li><a href="https://mirror.mi.hdm-stuttgart.de/freedocs/glossary.html">Glossary</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+        
+        <div aria-hidden="true" style="display: none;" role="tabpanel" class="ui-tabs-panel ui-widget-content ui-corner-bottom" aria-labelledby="ui-id-2" id="wh-search-pane">
+          <div class="ui-widget ui-widget-header ui-corner-all" id="wh-search-form">
+            <input spellcheck="false" autocomplete="off" id="wh-search-field" type="text"><button title="Suchen" role="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" id="wh-search-button"><span class="ui-button-icon-primary ui-icon ui-icon-search"></span><span class="ui-button-text">Suchen</span></button><span id="wh-highlight-group"><input class="ui-helper-hidden-accessible" checked="checked" id="wh-highlight-toggle" type="checkbox"><label title="Hervorhebung von Suchergebnissen ein-/ausschalten" role="button" class="ui-state-active ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" for="wh-highlight-toggle"><span class="ui-button-icon-primary ui-icon ui-icon-flag"></span><span class="ui-button-text">Hervorhebung von Suchergebnissen ein-/ausschalten</span></label></span>
+          </div>
+          <div id="wh-search-results">
+          </div>
+        </div>
+      </div>
+      <div style="position: relative; height: 839px;" class="ui-widget ui-widget-content ui-state-default ui-draggable ui-draggable-handle wh-hide-navigation" id="wh-separator">
+      </div>
+      <div style="border-color: rgb(170, 170, 170); height: 825.667px; width: 1177.67px;" id="wh-content">
+      <div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="sd1SectProjectGrep"></a>3.2.&nbsp;Poor man's <a class="xref" href="https://mirror.mi.hdm-stuttgart.de/freedocs/glossary.html#glo_UNIX" title="UNIX"><acronym class="acronym">UNIX</acronym></a> <span class="command"><strong><a class="command" href="http://linux.die.net/man/1/grep" target="_blank">grep</a></strong></span>.</h3></div></div></div><p>The <a class="xref" href="https://mirror.mi.hdm-stuttgart.de/freedocs/glossary.html#glo_UNIX" title="UNIX"><acronym class="acronym">UNIX</acronym></a> operating system provides a command <span class="command"><strong><a class="command" href="http://linux.die.net/man/1/grep" target="_blank">grep</a></strong></span> which allows for retrieving occurrences of a given string in text files. We consider an example text file <code class="filename">input.txt</code> containing four lines:</p><pre class="programlisting">&nbsp;&nbsp;1 Roses are nice flowers.
+&nbsp;&nbsp;2 Red wine is tasty
+&nbsp;&nbsp;3 The red cross acts worldwide
+&nbsp;&nbsp;4 Mayflower used to be a ship.</pre><p>We search this file <code class="filename">input.txt</code> for the occurrence of the string <span class="quote">“<span class="quote">flower</span>”</span> being contained in lines 1 and 4:</p><pre class="programlisting">&gt; grep <span class="bold"><strong>flower</strong></span> input.txt 
+Roses are nice <span class="bold"><strong>flower</strong></span>s.
+May<span class="bold"><strong>flower</strong></span> used to be a ship.</pre><p>Thus the <span class="command"><strong><a class="command" href="http://linux.die.net/man/1/grep" target="_blank">grep</a></strong></span> command echoes all lines containing the search string in question to standard output. Adding the command line option <code class="option">-i</code> allows for case insensitive searches:</p><pre class="programlisting">&gt; grep <code class="option">-i</code> <span class="bold"><strong>red</strong></span> input.txt
+<span class="bold"><strong>Red</strong></span> wine is tasty
+The <span class="bold"><strong>red</strong></span> cross acts worldwide</pre><p>This time all possible variants like <span class="quote">“<span class="quote">Red</span>”</span>, <span class="quote">“<span class="quote">red</span>”</span>, <span class="quote">“<span class="quote">RED</span>”</span> and so on will match.</p><p><span class="command"><strong><a class="command" href="http://linux.die.net/man/1/grep" target="_blank">grep</a></strong></span> also allows for searching multiple files. Consider a second file <code class="filename">inputSecond.txt</code>:</p><pre class="programlisting">&nbsp;&nbsp;1 Errors will show up in red.
+&nbsp;&nbsp;2 Let's start bug fixing</pre><p>We may search for case insensitive (<code class="option">-i</code> again) appearances of <span class="quote">“<span class="quote">red</span>”</span> within both files:</p><pre class="programlisting">&gt; grep -i <span class="bold"><strong>red</strong></span> input.txt  inputSecond.txt 
+input.txt:<span class="bold"><strong>Red</strong></span> wine is tasty
+input.txt:The <span class="bold"><strong>red</strong></span> cross acts worldwide
+inputSecond.txt:Errors will show up in <span class="bold"><strong>red</strong></span>.</pre><p>Finally the <code class="option">-l</code> option will filter individual appearances just showing filenames containing matches:</p><pre class="programlisting">&gt; grep -l Red input.txt  inputSecond.txt 
+input.txt</pre><p>In contrast a case insensitive search combining both <code class="option">-i</code> and <code class="option">-l</code> options yields:</p><pre class="programlisting">&gt; grep -i -l Red input.txt  inputSecond.txt 
+input.txt
+inputSecond.txt</pre><p>The <span class="command"><strong><a class="command" href="http://linux.die.net/man/1/grep" target="_blank">grep</a></strong></span> command may read its input from standard input allowing for <a class="link" href="https://en.wikipedia.org/wiki/Pipeline_%28Unix%29" target="_blank">pipes</a>.
+ This way another command's output feeds into a subsequently executed 
+command. As an example consider a recursive search for HTML files using 
+the <a class="link" href="http://linux.die.net/man/1/find" target="_blank">find</a> command:</p><pre class="programlisting">&gt; find . -name \*.html
+./Sd1/Wc/wc/Testdata/input.html
+./Sda1/rdbmsXml2Html/TestData/climbingprice.html
+./Sda1/NoCast/src/main/resources/gallery.html
+./Sda1/Jdom/Html2Html/src/main/resources/imageExampleNew.html
+./Sda1/Jdom/Html2Html/src/main/resources/imageExample.html
+./Sda1/VerifyImgAccess/fileextref.html</pre><p>We want to restrict the above list to pathnames containing the string <span class="quote">“<span class="quote">Example</span>”</span>. This may be achieved by <a class="link" href="https://en.wikipedia.org/wiki/Pipeline_%28Unix%29" target="_blank">piping</a> the <a class="link" href="http://linux.die.net/man/1/find" target="_blank">find</a> command's output as input to <span class="command"><strong><a class="command" href="http://linux.die.net/man/1/grep" target="_blank">grep</a></strong></span> searching for the occurrence of the string <span class="quote">“<span class="quote">Example</span>”</span>. Technically both processes get connected by means of the pipe symbol <span class="quote">“<span class="quote">|</span>”</span>:</p><pre class="programlisting">&gt; find . -name \*.html|grep Example
+./Sda1/Jdom/Html2Html/src/main/resources/imageExampleNew.html
+./Sda1/Jdom/Html2Html/src/main/resources/imageExample.html</pre><div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Tip</h3><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Read about reading from files by using instances of <code class="classname"><a class="classname" href="http://www.tutorialspoint.com/java/io/bufferedreader_readline.htm" target="_blank">java.io.BufferedReader</a></code>.</p></li><li class="listitem"><p>Reading from standard input may be achieved by:</p><pre class="programlisting"><span class="hl-keyword">final</span> BufferedReader source = <span class="hl-keyword">new</span> BufferedReader(<span class="hl-keyword">new</span> InputStreamReader(System.in));
+...</pre></li><li class="listitem"><p>You may create an executable jar archive using Maven. Starting from the <code class="code">mi-mavem-archetype-quickstart</code> your <code class="filename">pom.xml</code> already contains a blueprint. Just insert your class containing the entry <code class="methodname">main(...)</code> method (i.e. <code class="classname">de.hdm_stuttgart.mi.sd1.grep.Grep</code> in the current example) accordingly:</p><pre class="programlisting"><span class="hl-tag">&lt;plugin&gt;</span>
+  <span class="hl-tag">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="hl-tag">&lt;/groupId&gt;</span>
+  <span class="hl-tag">&lt;artifactId&gt;</span>maven-shade-plugin<span class="hl-tag">&lt;/artifactId&gt;</span>
+  <span class="hl-tag">&lt;version&gt;</span>2.4.1<span class="hl-tag">&lt;/version&gt;</span>
+  <span class="hl-tag">&lt;configuration&gt;</span>
+    <span class="hl-tag">&lt;transformers&gt;</span>
+      <span class="hl-tag">&lt;transformer</span> <span class="hl-attribute">implementation</span>=<span class="hl-value">"org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"</span><span class="hl-tag">&gt;</span>
+        <span class="hl-tag">&lt;manifestEntries&gt;</span>
+          <span class="hl-tag">&lt;Main-Class&gt;</span><span class="bold"><strong>de.hdm_stuttgart.mi.sd1.grep.Grep</strong></span><span class="hl-tag">&lt;/Main-Class&gt;</span>
+        <span class="hl-tag">&lt;/manifestEntries&gt;</span>
+      <span class="hl-tag">&lt;/transformer&gt;</span>
+    <span class="hl-tag">&lt;/transformers&gt;</span>
+  <span class="hl-tag">&lt;/configuration&gt;</span>
+  <span class="hl-tag">&lt;executions&gt;</span>
+    <span class="hl-tag">&lt;execution&gt;</span>
+      <span class="hl-tag">&lt;phase&gt;</span>package<span class="hl-tag">&lt;/phase&gt;</span>
+        <span class="hl-tag">&lt;goals&gt;</span>
+          <span class="hl-tag">&lt;goal&gt;</span>shade<span class="hl-tag">&lt;/goal&gt;</span>
+        <span class="hl-tag">&lt;/goals&gt;</span>
+     <span class="hl-tag">&lt;/execution&gt;</span>
+  <span class="hl-tag">&lt;/executions&gt;</span>
+<span class="hl-tag">&lt;/plugin&gt;</span></pre><p>Running <span class="command"><strong>mvn</strong></span> <code class="option">install</code> will create an executable jar file <code class="filename">~/.m2/repository/de/hdm-stuttgart/mi/sd1/grep/0.9/grep-0.9.jar</code> with <span class="quote">“<span class="quote">~</span>”</span> denoting your home directory. You may then create a simple shell wrapper script <code class="filename">mygrep</code> (don't forget to supply execute permission) hiding the <span class="command"><strong>java</strong></span> execution stuff:</p><pre class="programlisting">#!/bin/sh
+
+# A simple wrapper hiding java execution stuff.
+
+# Do not forget to make this file executable by issuing "chmod ugo+x mygrep"
+
+java -jar ~/.m2/repository/de/hdm-stuttgart/mi/sd1/grep/0.9/grep-0.9.jar $*
+
+#end</pre><p>You my now simply invoke your application. The following example reads from standard input by virtue of a pipe:</p><pre class="programlisting">&gt; cat Testdata/input.txt | ./bin/mygrep red
+The red cross acts worldwide</pre></li></ol></div></div></div></div>
+    </div>
+
+    
+  </body></html>
